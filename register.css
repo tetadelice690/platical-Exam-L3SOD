@@ -1,0 +1,59 @@
+h1{
+    background-color:white;
+    color: blue;
+    margin-right: 40px;
+    margin-left: 40px;
+
+}
+form{
+    background-color:white;
+    width: 400px;
+    box-shadow:rgb(193, 187, 187) 5px 5px 5px 5px;
+}
+fieldset{
+
+    width: 500px;
+    border-radius: 6px;
+}
+a:hover{
+    color: aquamarine;
+    text-decoration: none;
+
+}
+.text{
+    display: flex;
+    justify-content: center;
+    /* text-align: center; */
+    margin-right: 23PX;
+    background-color:white;
+
+
+}
+input{
+    border-radius: 5px;
+    border-color: rgb(236, 226, 226);
+}
+label{
+    margin-right: 50px;
+}
+button{
+    border-radius: 25px;
+   background-color: blue;
+   transition: 0.9s;
+   padding: 15px;
+   border: none;
+    box-shadow:rgb(193, 187, 187) 2px 2px 2px;
+   
+
+   cursor: pointer;
+ 
+}
+body{
+    background-color:whitesmoke;
+}
+button:hover{
+    background-color:gold;
+       transform:translateY(-5px);
+
+    
+}

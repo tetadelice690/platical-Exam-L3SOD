@@ -1,2 +1,6 @@
-# platical-Exam-L3SOD
-this is the work of our group members in L3SODA
+names 
+------------
+-UYISENGA TETA Delice
+-GIHOZO Liliane
+-UWIMANA Esperance
+-------------------

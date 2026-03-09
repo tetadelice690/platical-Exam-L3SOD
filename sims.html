@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMS · Stock Inventory Management System</title>
+    <style>
+        /* ===== MODERN ANIMATED STYLING ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            animation: gradientBG 15s ease infinite;
+            background-size: 400% 400%;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* ===== ANIMATED BACKGROUND ===== */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .animated-bg span {
+            position: absolute;
+            display: block;
+            width: 20px;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            animation: animate 25s linear infinite;
+            bottom: -150px;
+        }
+
+        .animated-bg span:nth-child(1) { left: 25%; width: 80px; height: 80px; animation-delay: 0s; }
+        .animated-bg span:nth-child(2) { left: 10%; width: 20px; height: 20px; animation-delay: 2s; animation-duration: 12s; }
+        .animated-bg span:nth-child(3) { left: 70%; width: 20px; height: 20px; animation-delay: 4s; }
+        .animated-bg span:nth-child(4) { left: 40%; width: 60px; height: 60px; animation-delay: 0s; animation-duration: 18s; }
+        .animated-bg span:nth-child(5) { left: 65%; width: 20px; height: 20px; animation-delay: 0s; }
+        .animated-bg span:nth-child(6) { left: 75%; width: 110px; height: 110px; animation-delay: 3s; }
+        .animated-bg span:nth-child(7) { left: 35%; width: 150px; height: 150px; animation-delay: 7s; }
+        .animated-bg span:nth-child(8) { left: 50%; width: 25px; height: 25px; animation-delay: 15s; animation-duration: 45s; }
+        .animated-bg span:nth-child(9) { left: 20%; width: 15px; height: 15px; animation-delay: 2s; animation-duration: 35s; }
+        .animated-bg span:nth-child(10) { left: 85%; width: 150px; height: 150px; animation-delay: 0s; animation-duration: 11s; }
+
+        @keyframes animate {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; border-radius: 0; }
+            100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; border-radius: 50%; }
+        }
+
+        /* ===== AUTH PAGES ===== */
+        .auth-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 50px;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            animation: cardFloat 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        @keyframes cardFloat {
+            0% { opacity: 0; transform: translateY(30px) rotateX(-10deg); }
+            100% { opacity: 1; transform: translateY(0) rotateX(0); }
+        }
+
+        .auth-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 40px 80px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .auth-card h2 {
+            color: #1a2b3c;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 10px rgba(102, 126, 234, 0.3); }
+            50% { text-shadow: 0 0 20px rgba(102, 126, 234, 0.6); }
+        }
+
+        .auth-card label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            animation: labelFade 0.5s ease;
+        }
+
+        @keyframes labelFade {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .auth-card input {
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            background: white;
+        }
+
+        .auth-card input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+            transform: scale(1.02);
+        }
+
+        .auth-card input:hover {
+            border-color: #764ba2;
+            transform: translateY(-2px);
+        }
+
+        .auth-card button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-card button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .auth-card button:hover::before {
+            left: 100%;
+        }
+
+        .auth-card button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+        }
+
+        .auth-card button:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .auth-card p {
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+            animation: textFade 0.5s ease;
+        }
+
+        .auth-card a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 700;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .auth-card a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+
+        .auth-card a:hover::after {
+            width: 100%;
+        }
+
+        .message {
+            color: #e53e3e;
+            font-size: 14px;
+            margin-top: 10px;
+            text-align: center;
+            padding: 12px;
+            background: rgba(229, 62, 62, 0.1);
+            border-radius: 10px;
+            display: none;
+            animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        @keyframes shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-4px); }
+            40%, 60% { transform: translateX(4px); }
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        /* ===== DASHBOARD ===== */
+        .dashboard {
+            display: none;
+            min-height: 100vh;
+            background: rgba(247, 250, 252, 0.95);
+            backdrop-filter: blur(10px);
+        }
+
+        .dashboard.active {
+            display: flex;
+            animation: dashboardFade 0.5s ease;
+        }
+
+        @keyframes dashboardFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #1a202c 0%, #2d3748 100%);
+            color: white;
+            padding: 30px 20px;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 100;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.2);
+            animation: sidebarSlide 0.5s ease;
+        }
+
+        @keyframes sidebarSlide {
+            from { transform: translateX(-100%); }
+            to { transform: translateX(0); }
+        }
+
+        .sidebar h2 {
+            font-size: 28px;
+            margin-bottom: 50px;
+            padding-left: 15px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff, #e2e8f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: logoPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            padding: 15px 25px;
+            margin: 10px 0;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar li::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .sidebar li:hover::before {
+            left: 100%;
+        }
+
+        .sidebar li i {
+            width: 24px;
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .sidebar li:hover i {
+            transform: rotate(360deg);
+        }
+
+        .sidebar li:hover {
+            background: linear-gradient(135deg, #4a5568, #2d3748);
+            transform: translateX(10px);
+            box-shadow: -5px 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar li.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            animation: activePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes activePulse {
+            0%, 100% { box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3); }
+            50% { box-shadow: 0 15px 30px rgba(102, 126, 234, 0.5); }
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main {
+            flex: 1;
+            margin-left: 280px;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 20px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: headerSlide 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes headerSlide {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header h2 {
+            color: #1a202c;
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: #718096;
+            margin-top: 5px;
+            font-size: 15px;
+        }
+
+        .header button {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .header button:hover::before {
+            left: 100%;
+        }
+
+        .header button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(229, 62, 62, 0.3);
+        }
+
+        /* ===== CARDS ===== */
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border-left: 5px solid #cbd5e0;
+            animation: cardFade 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .card:hover::before {
+            left: 100%;
+        }
+
+        @keyframes cardFade {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h3 {
+            color: #718096;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #1a202c;
+            font-size: 36px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card.green { border-left-color: #48bb78; }
+        .card.red { border-left-color: #f56565; }
+        .card.blue { border-left-color: #667eea; }
+
+        /* ===== PRODUCTS SECTION ===== */
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            animation: headerFade 0.5s ease;
+        }
+
+        @keyframes headerFade {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .products-header h3 {
+            color: #1a202c;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .products-header button {
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .products-header button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .products-header button:hover::before {
+            left: 100%;
+        }
+
+        .products-header button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(72, 187, 120, 0.3);
+        }
+
+        /* ===== TABLE ===== */
+        .table-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: tableSlide 0.5s ease;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes tableSlide {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 18px 20px;
+            text-align: left;
+        }
+
+        td {
+            padding: 16px 20px;
+            color: #1a202c;
+            border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+        }
+
+        tr {
+            transition: all 0.3s;
+        }
+
+        tr:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            transform: scale(1.01);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            display: inline-block;
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .status-instock {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+        }
+
+        .status-outstock {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            margin: 0 5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .edit-btn {
+            background: linear-gradient(135deg, #ecc94b, #d69e2e);
+            color: white;
+        }
+
+        .edit-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(236, 201, 75, 0.3);
+        }
+
+        .delete-btn {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+        }
+
+        .delete-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(229, 62, 62, 0.3);
+        }
+
+        /* ===== MODAL ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            animation: modalFade 0.3s ease;
+        }
+
+        @keyframes modalFade {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 30px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlide 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(-30px) scale(0.9); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .modal-content h3 {
+            color: #1a202c;
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .modal-content input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+            transform: scale(1.02);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-buttons button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .modal-buttons button:hover::before {
+            left: 100%;
+        }
+
+        .modal-buttons button:first-child {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+        }
+
+        .modal-buttons button:first-child:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(72, 187, 120, 0.3);
+        }
+
+        .modal-buttons button:last-child {
+            background: linear-gradient(135deg, #cbd5e0, #a0aec0);
+            color: #4a5568;
+        }
+
+        .modal-buttons button:last-child:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 30px rgba(160, 174, 192, 0.3);
+        }
+
+        /* ===== MOBILE MENU ===== */
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 20px;
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            animation: togglePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes togglePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 800px;
+            }
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #a0aec0;
+            font-size: 16px;
+            animation: emptyPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes emptyPulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <!-- ANIMATED BACKGROUND -->
+    <div class="animated-bg">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <!-- MOBILE MENU TOGGLE -->
+    <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+
+    <!-- REGISTER PAGE -->
+    <section id="registerPage" class="auth-container">
+        <form id="registerForm" class="auth-card" onsubmit="return false;">
+            <h2>Create Account</h2>
+            
+            <label>Full Name</label>
+            <input type="text" id="regName" placeholder="Enter your full name" autocomplete="off">
+
+            <label>Email</label>
+            <input type="email" id="regEmail" placeholder="Enter your email" autocomplete="off">
+
+            <label>Password</label>
+            <input type="password" id="regPassword" placeholder="Enter password" autocomplete="off">
+
+            <label>Confirm Password</label>
+            <input type="password" id="regConfirm" placeholder="Confirm password" autocomplete="off">
+
+            <button type="button" onclick="handleRegister()">Register</button>
+
+            <p>Already have account? <a onclick="showLogin()">Login</a></p>
+
+            <div id="registerMsg" class="message"></div>
+        </form>
+    </section>
+
+    <!-- LOGIN PAGE -->
+    <section id="loginPage" class="auth-container" style="display: none;">
+        <form id="loginForm" class="auth-card" onsubmit="return false;">
+            <h2>Welcome Back</h2>
+            
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="Enter your email" autocomplete="off">
+
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="Enter your password" autocomplete="off">
+
+            <button type="button" onclick="handleLogin()">Login</button>
+
+            <p>No account? <a onclick="showRegister()">Register</a></p>
+
+            <div id="loginMsg" class="message"></div>
+        </form>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="dashboard">
+        <aside class="sidebar" id="sidebar">
+            <h2>SIMS</h2>
+            <ul>
+                <li class="active" onclick="setActive(this, 'dashboard')">
+                    <span>📊</span> Dashboard
+                </li>
+                <li onclick="setActive(this, 'products')">
+                    <span>📦</span> Products
+                </li>
+                <li onclick="setActive(this, 'reports')">
+                    <span>📈</span> Reports
+                </li>
+                <li onclick="setActive(this, 'settings')">
+                    <span>⚙️</span> Settings
+                </li>
+            </ul>
+        </aside>
+
+        <div class="main" id="mainContent">
+            <!-- Header -->
+            <header class="header">
+                <div>
+                    <h2>SIMS – Stock Inventory Management System</h2>
+                    <p id="userName"></p>
+                </div>
+                <button onclick="logout()">Logout</button>
+            </header>
+
+            <!-- Dynamic Content -->
+            <div id="dynamicContent"></div>
+        </div>
+    </section>
+
+    <!-- PRODUCT MODAL -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Add Product</h3>
+            
+            <input type="hidden" id="editIndex" value="">
+
+            <label>Product Name</label>
+            <input type="text" id="pName" placeholder="Enter product name">
+
+            <label>Category</label>
+            <input type="text" id="pCategory" placeholder="Enter category">
+
+            <label>Quantity</label>
+            <input type="number" id="pQuantity" placeholder="Enter quantity" min="0">
+
+            <label>Price ($)</label>
+            <input type="number" id="pPrice" placeholder="Enter price" min="0" step="0.01">
+
+            <div class="modal-buttons">
+                <button onclick="saveProduct()">Save</button>
+                <button onclick="closeModal()">Cancel</button>
+            </div>
+
+            <div id="productMsg" class="message"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== STORAGE =====
+        let users = JSON.parse(localStorage.getItem("users")) || [];
+        let products = JSON.parse(localStorage.getItem("products")) || [];
+
+        // Sample products if empty with animations
+        if (products.length === 0) {
+            products = [
+                { name: "Wireless Mouse", category: "Electronics", quantity: 50, price: 29.99 },
+                { name: "Desk Lamp", category: "Home", quantity: 0, price: 45.99 },
+                { name: "Notebook", category: "Stationery", quantity: 100, price: 5.99 },
+                { name: "USB Cable", category: "Electronics", quantity: 200, price: 9.99 },
+                { name: "Coffee Mug", category: "Kitchen", quantity: 75, price: 12.99 },
+                { name: "Headphones", category: "Electronics", quantity: 30, price: 89.99 }
+            ];
+            localStorage.setItem("products", JSON.stringify(products));
+        }
+
+        // ===== PAGE CONTROL WITH ANIMATIONS =====
+        function showLogin() {
+            document.getElementById("registerPage").style.display = "none";
+            document.getElementById("loginPage").style.display = "flex";
+            document.getElementById("dashboard").classList.remove("active");
+            clearMessages();
+            
+            // Add animation class
+            document.querySelector('.auth-card').style.animation = 'cardFloat 0.8s cubic-bezier(0.23, 1, 0.32, 1)';
+        }
+
+        function showRegister() {
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("registerPage").style.display = "flex";
+            document.getElementById("dashboard").classList.remove("active");
+            clearMessages();
+            
+            // Add animation class
+            document.querySelector('.auth-card').style.animation = 'cardFloat 0.8s cubic-bezier(0.23, 1, 0.32, 1)';
+        }
+
+        function clearMessages() {
+            document.getElementById("registerMsg").classList.remove("show");
+            document.getElementById("loginMsg").classList.remove("show");
+        }
+
+        // ===== REGISTER WITH VALIDATION =====
+        function handleRegister() {
+            let name = document.getElementById("regName").value.trim();
+            let email = document.getElementById("regEmail").value.trim();
+            let password = document.getElementById("regPassword").value;
+            let confirm = document.getElementById("regConfirm").value;
+            let msg = document.getElementById("registerMsg");
+
+            if (!name || !email || !password || !confirm) {
+                showMessage(msg, "All fields are required");
+                return;
+            }
+
+            if (!email.includes("@") || !email.includes(".")) {
+                showMessage(msg, "Enter a valid email address");
+                return;
+            }
+
+            if (users.find(u => u.email === email)) {
+                showMessage(msg, "Email already exists");
+                return;
+            }
+
+            let strong = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+            if (!strong.test(password)) {
+                showMessage(msg, "Password must be 8+ chars with uppercase, lowercase and number");
+                return;
+            }
+
+            if (password !== confirm) {
+                showMessage(msg, "Passwords do not match");
+                return;
+            }
+
+            users.push({ name, email, password });
+            localStorage.setItem("users", JSON.stringify(users));
+
+            showLogin();
+            document.getElementById("registerForm").reset();
+        }
+
+        function showMessage(element, text) {
+            element.textContent = text;
+            element.classList.add("show");
+            setTimeout(() => {
+                element.classList.remove("show");
+            }, 3000);
+        }
+
+        // ===== LOGIN =====
+        function handleLogin() {
+            let email = document.getElementById("loginEmail").value.trim();
+            let password = document.getElementById("loginPassword").value;
+            let msg = document.getElementById("loginMsg");
+
+            let user = users.find(u => u.email === email && u.password === password);
+
+            if (!user) {
+                showMessage(msg, "Invalid email or password");
+                return;
+            }
+
+            localStorage.setItem("loggedUser", JSON.stringify(user));
+            openDashboard();
+        }
+
+        // ===== DASHBOARD =====
+        function openDashboard() {
+            document.getElementById("loginPage").style.display = "none";
+            document.getElementById("registerPage").style.display = "none";
+            document.getElementById("dashboard").classList.add("active");
+
+            let user = JSON.parse(localStorage.getItem("loggedUser"));
+            document.getElementById("userName").innerHTML = `Welcome, <strong>${user.name}</strong>`;
+
+            renderDashboard();
+        }
+
+        // ===== LOGOUT =====
+        function logout() {
+            localStorage.removeItem("loggedUser");
+            showLogin();
+        }
+
+        // ===== SIDEBAR =====
+        function setActive(element, section) {
+            document.querySelectorAll(".sidebar li").forEach(li => li.classList.remove("active"));
+            element.classList.add("active");
+
+            // Add ripple effect
+            element.style.animation = 'activePulse 0.5s ease';
+            setTimeout(() => {
+                element.style.animation = '';
+            }, 500);
+
+            if (section === 'dashboard') renderDashboard();
+            else if (section === 'products') renderProducts();
+            else if (section === 'reports') renderReports();
+            else if (section === 'settings') renderSettings();
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                document.getElementById("sidebar").classList.remove("active");
+            }
+        }
+
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("active");
+        }
+
+        // ===== DASHBOARD VIEW =====
+        function renderDashboard() {
+            let html = `
+                <div class="cards">
+                    <div class="card blue">
+                        <h3>Total Products</h3>
+                        <p>${products.length}</p>
+                    </div>
+                    <div class="card green">
+                        <h3>In Stock</h3>
+                        <p>${products.filter(p => p.quantity > 0).length}</p>
+                    </div>
+                    <div class="card red">
+                        <h3>Out of Stock</h3>
+                        <p>${products.filter(p => p.quantity === 0).length}</p>
+                    </div>
+                </div>
+
+                <div class="products-header">
+                    <h3>Recent Products</h3>
+                    <button onclick="openModal()">+ Add Product</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${renderProductRows(products.slice(0, 5))}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            document.getElementById("dynamicContent").innerHTML = html;
+        }
+
+        // ===== PRODUCTS VIEW =====
+        function renderProducts() {
+            let html = `
+                <div class="products-header">
+                    <h3>All Products</h3>
+                    <button onclick="openModal()">+ Add Product</button>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Quantity</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${renderProductRows(products)}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            document.getElementById("dynamicContent").innerHTML = html;
+        }
+
+        // ===== REPORTS VIEW =====
+        function renderReports() {
+            let totalValue = products.reduce((sum, p) => sum + (p.price * p.quantity), 0).toFixed(2);
+            let averagePrice = (products.reduce((sum, p) => sum + p.price, 0) / products.length || 0).toFixed(2);
+
+            let html = `
+                <div class="cards">
+                    <div class="card blue">
+                        <h3>Total Inventory Value</h3>
+                        <p>$${totalValue}</p>
+                    </div>
+                    <div class="card green">
+                        <h3>Average Price</h3>
+                        <p>$${averagePrice}</p>
+                    </div>
+                    <div class="card red">
+                        <h3>Categories</h3>
+                        <p>${new Set(products.map(p => p.category)).size}</p>
+                    </div>
+                </div>
+
+                <div class="table-container" style="padding: 40px; text-align: center;">
+                    <span style="font-size: 64px; display: block; margin-bottom: 20px; animation: bounce 2s ease infinite;">📊</span>
+                    <h3 style="color: #667eea; margin-bottom: 10px;">Detailed Reports</h3>
+                    <p style="color: #718096;">Advanced analytics and charts would be displayed here</p>
+                </div>
+            `;
+            document.getElementById("dynamicContent").innerHTML = html;
+        }
+
+        // ===== SETTINGS VIEW =====
+        function renderSettings() {
+            let html = `
+                <div class="cards">
+                    <div class="card blue">
+                        <h3>System Status</h3>
+                        <p>Active</p>
+                    </div>
+                    <div class="card green">
+                        <h3>Storage Used</h3>
+                        <p>${(JSON.stringify(localStorage).length / 1024).toFixed(2)} KB</p>
+                    </div>
+                    <div class="card red">
+                        <h3>Total Users</h3>
+                        <p>${users.length}</p>
+                    </div>
+                </div>
+
+                <div class="table-container" style="padding: 40px; text-align: center;">
+                    <span style="font-size: 64px; display: block; margin-bottom: 20px; animation: spin 4s linear infinite;">⚙️</span>
+                    <h3 style="color: #667eea; margin-bottom: 10px;">Settings Panel</h3>
+                    <p style="color: #718096;">Profile settings, preferences, and configuration options</p>
+                </div>
+            `;
+            document.getElementById("dynamicContent").innerHTML = html;
+        }
+
+        // ===== RENDER PRODUCT ROWS =====
+        function renderProductRows(productsToRender) {
+            if (productsToRender.length === 0) {
+                return `<tr><td colspan="7" class="empty-state"><span style="font-size: 48px;">📦</span><br>No products found. Click "Add Product" to create one.</td></tr>`;
+            }
+
+            return productsToRender.map((p, i) => {
+                let status = p.quantity > 0 ? 'In Stock' : 'Out of Stock';
+                let statusClass = p.quantity > 0 ? 'status-instock' : 'status-outstock';
+                let id = `PRO-${String(i + 1).padStart(3, '0')}`;
+                let originalIndex = products.findIndex(prod => prod.name === p.name && prod.category === p.category);
+
+                return `
+                    <tr style="animation: rowFade 0.5s ease ${i * 0.1}s both;">
+                        <td>${id}</td>
+                        <td>${p.name}</td>
+                        <td>${p.category}</td>
+                        <td>${p.quantity}</td>
+                        <td>$${p.price.toFixed(2)}</td>
+                        <td><span class="status-badge ${statusClass}">${status}</span></td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="editProduct(${originalIndex})">Edit</button>
+                            <button class="action-btn delete-btn" onclick="deleteProduct(${originalIndex})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ===== MODAL =====
+        function openModal(editMode = false) {
+            let modal = document.getElementById("modal");
+            modal.classList.add("show");
+            document.getElementById("productMsg").classList.remove("show");
+            
+            if (!editMode) {
+                document.getElementById("editIndex").value = "";
+                document.getElementById("modalTitle").textContent = "Add Product";
+                document.getElementById("pName").value = "";
+                document.getElementById("pCategory").value = "";
+                document.getElementById("pQuantity").value = "";
+                document.getElementById("pPrice").value = "";
+            }
+        }
+
+        function closeModal() {
+            let modal = document.getElementById("modal");
+            modal.classList.remove("show");
+            document.getElementById("productMsg").classList.remove("show");
+        }
+
+        // ===== SAVE PRODUCT =====
+        function saveProduct() {
+            let name = document.getElementById("pName").value.trim();
+            let category = document.getElementById("pCategory").value.trim();
+            let quantity = parseInt(document.getElementById("pQuantity").value);
+            let price = parseFloat(document.getElementById("pPrice").value);
+            let editIndex = document.getElementById("editIndex").value;
+            let msg = document.getElementById("productMsg");
+
+            if (!name || !category) {
+                showMessage(msg, "Name and category are required");
+                return;
+            }
+
+            if (isNaN(quantity) || quantity < 0) {
+                showMessage(msg, "Quantity must be a positive number");
+                return;
+            }
+
+            if (isNaN(price) || price < 0) {
+                showMessage(msg, "Price must be a positive number");
+                return;
+            }
+
+            let product = { name, category, quantity, price };
+
+            if (editIndex === "") {
+                products.push(product);
+            } else {
+                products[editIndex] = product;
+            }
+
+            localStorage.setItem("products", JSON.stringify(products));
+            
+            // Animate close
+            let modal = document.getElementById("modal");
+            modal.style.animation = 'modalSlide 0.3s reverse';
+            setTimeout(() => {
+                closeModal();
+                modal.style.animation = '';
+            }, 200);
+
+            // Refresh current view
+            let active = document.querySelector(".sidebar li.active");
+            if (active) {
+                let section = active.textContent.trim().toLowerCase();
+                if (section.includes("dashboard")) renderDashboard();
+                else if (section.includes("products")) renderProducts();
+            }
+        }
+
+        // ===== EDIT PRODUCT =====
+        function editProduct(index) {
+            let p = products[index];
+            document.getElementById("editIndex").value = index;
+            document.getElementById("modalTitle").textContent = "Edit Product";
+            document.getElementById("pName").value = p.name;
+            document.getElementById("pCategory").value = p.category;
+            document.getElementById("pQuantity").value = p.quantity;
+            document.getElementById("pPrice").value = p.price;
+            openModal(true);
+        }
+
+        // ===== DELETE PRODUCT =====
+        function deleteProduct(index) {
+            if (confirm("Are you sure you want to delete this product?")) {
+                products.splice(index, 1);
+                localStorage.setItem("products", JSON.stringify(products));
+
+                // Refresh current view
+                let active = document.querySelector(".sidebar li.active");
+                if (active) {
+                    let section = active.textContent.trim().toLowerCase();
+                    if (section.includes("dashboard")) renderDashboard();
+                    else if (section.includes("products")) renderProducts();
+                }
+            }
+        }
+
+        // ===== ANIMATION STYLES =====
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rowFade {
+                from { opacity: 0; transform: translateX(-20px); }
+                to { opacity: 1; transform: translateX(0); }
+            }
+            
+            @keyframes bounce {
+                0%, 100% { transform: translateY(0); }
+                50% { transform: translateY(-10px); }
+            }
+            
+            @keyframes spin {
+                from { transform: rotate(0deg); }
+                to { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ===== CHECK AUTH =====
+        if (localStorage.getItem("loggedUser")) {
+            openDashboard();
+        } else {
+            showLogin();
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            let modal = document.getElementById("modal");
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
